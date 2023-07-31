@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "845495832728",
+    "project_id": "mastris-f87c2",
+    "storage_bucket": "mastris-f87c2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:845495832728:android:aaae65e168fac92a83c0ed",
+        "android_client_info": {
+          "package_name": "ac.id.unja.mastrisapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "845495832728-ch55pe819ss85901v94d6m1fqn9h7r08.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8FvxyYlP82UcuJUFdGyER2JCrgkdOejI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "845495832728-ch55pe819ss85901v94d6m1fqn9h7r08.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
