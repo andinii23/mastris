@@ -66,12 +66,13 @@ class _ChatMhsState extends State<ChatMhs> {
                                     color: mainWhiteColor,
                                   ),
                                 ),
+
                                 if(SpUtil.getString("gelar_depan") != "")
                                 (SizedBox(
                                   width:
                                       MediaQuery.of(context).size.width / 1.5,
                                   child: Text(
-                                    SpUtil.getString("gelar_depan")! +SpUtil.getString("nama_pegawai")! + SpUtil.getString("gelar_belakang")!,
+                                    "${SpUtil.getString("gelar_depan")!} ${SpUtil.getString("nama_pegawai")!} ${SpUtil.getString("gelar_belakang")!}",
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,

@@ -531,7 +531,6 @@ class StatusCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Container(
-        height: 80,
         padding: const EdgeInsets.all(10),
         constraints: const BoxConstraints(
             minWidth: 90.0, maxWidth: 100.0, minHeight: 70.0),

@@ -19,17 +19,19 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-    TextEditingController _usernameController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   final _formState = GlobalKey<FormState>();
   String? _usernameError;
   String? _passwordError;
   String urlVersi = "";
   String urlApk = "";
+  late final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey;
   @override
   void initState() {
     super.initState();
     // Check the app version before showing the login page
+    _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
     _checkAppVersion();
   }
 
@@ -82,16 +84,16 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
- void _redirectToAppStore() async {
-  String playStoreUrl = urlApk;
-  if (await canLaunch(playStoreUrl)) {
-    await launch(playStoreUrl);
-  } else {
-    print("Could not launch Play Store.");
-    // Handle the case if the URL cannot be launched (e.g., no web browser available)
-    // You can show an error message or provide an alternative action here.
+  void _redirectToAppStore() async {
+    String playStoreUrl = urlApk;
+    if (await canLaunch(playStoreUrl)) {
+      await launch(playStoreUrl);
+    } else {
+      print("Could not launch Play Store.");
+      // Handle the case if the URL cannot be launched (e.g., no web browser available)
+      // You can show an error message or provide an alternative action here.
+    }
   }
-}
 
   @override
   void dispose() {
@@ -99,20 +101,21 @@ class _LoginPageState extends State<LoginPage> {
     _passwordController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-     final size = MediaQuery.of(context).size;
-    return SafeArea(child: 
-    Scaffold(
-      appBar: AppBar(
+    final size = MediaQuery.of(context).size;
+    return SafeArea(
+        child: ScaffoldMessenger(
+          key: _scaffoldMessengerKey,
+          child: Scaffold(
+              appBar: AppBar(
           centerTitle: true,
           title: Text(
             "",
             textAlign: TextAlign.start,
             style: TextStyle(
-                fontSize: 20,
-                color: mainBlackColor,
-                fontWeight: FontWeight.w700),
+                fontSize: 20, color: mainBlackColor, fontWeight: FontWeight.w700),
           ),
           elevation: 0.0,
           backgroundColor: Colors.transparent,
@@ -125,8 +128,8 @@ class _LoginPageState extends State<LoginPage> {
               Navigator.pushNamed(context, 'gerbangpage');
             },
           ),
-        ),
-        body: SingleChildScrollView(
+              ),
+              body: SingleChildScrollView(
           child: Container(
             // margin: const EdgeInsets.only(top: 20),
             padding: const EdgeInsets.all(20),
@@ -222,7 +225,7 @@ class _LoginPageState extends State<LoginPage> {
                           const SizedBox(
                             height: 5,
                           ),
-                          if (_passwordError != null)
+                            if (_passwordError != null)
                             Text(
                               _passwordError!,
                               style: const TextStyle(
@@ -258,17 +261,18 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
           ),
-        ),
-    ));
+              ),
+            ),
+        ));
   }
-  Future _loginToApp() async {
+
+  Future<void> _loginToApp() async {
     var response = await http.post(Uri.parse(login_url), body: {
       "username": _usernameController.text,
       "password": _passwordController.text,
     });
 
     if (response.statusCode == 200) {
-      // print(response.body);
       final loginModel = loginModelFromJson(response.body);
       var token = loginModel.data.list.token;
       SpUtil.putString("token", token);
@@ -278,28 +282,36 @@ class _LoginPageState extends State<LoginPage> {
       SpUtil.putBool("isLogin", true);
       Navigator.pushNamed(context, 'homepage');
     } else {
-      print("login gagal");
       var body = jsonDecode(response.body);
       if (body.containsKey("error_message")) {
         String errorMessage = body["error_message"];
         if (errorMessage.toLowerCase().contains("username")) {
-          // Menyimpan pesan kesalahan username
           setState(() {
-            _usernameError = "username salah!!";
-            _passwordError = null; // Menghapus pesan kesalahan password
+            _usernameError = "username atau password salah!!";
+            _passwordError = null;
           });
         } else if (errorMessage.toLowerCase().contains("password")) {
-          // Menyimpan pesan kesalahan password
           setState(() {
-            _passwordError = "password salah!!";
-            _usernameError = null; // Menghapus pesan kesalahan username
+            _passwordError = "username atau password salah!!";
+            _usernameError = null;
           });
         } else {
-          // Menampilkan pesan kesalahan umum jika bukan kesalahan username atau password
+          // Handle other error cases, if necessary
           print("Terjadi kesalahan: $errorMessage");
         }
         print(body["error_message"]);
+      } else {
+        print("Terjadi kesalahan: ${response.statusCode}");
       }
+
+      // Display a SnackBar with the error message
+      _scaffoldMessengerKey.currentState?.showSnackBar(
+        const SnackBar(
+          content: Text("Login gagal: username atau password salah!"),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    
     }
   }
 }
