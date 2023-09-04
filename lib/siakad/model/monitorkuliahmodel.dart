@@ -9,15 +9,15 @@ MonitoringKuliahModel monitoringKuliahModelFromJson(String str) => MonitoringKul
 String monitoringKuliahModelToJson(MonitoringKuliahModel data) => json.encode(data.toJson());
 
 class MonitoringKuliahModel {
+    int code;
+    String errorMessage;
+    Data data;
+
     MonitoringKuliahModel({
         required this.code,
         required this.errorMessage,
         required this.data,
     });
-
-    int code;
-    String errorMessage;
-    Data data;
 
     factory MonitoringKuliahModel.fromJson(Map<String, dynamic> json) => MonitoringKuliahModel(
         code: json["code"],
@@ -33,17 +33,17 @@ class MonitoringKuliahModel {
 }
 
 class Data {
-    Data({
-        required this.total,
-        required this.perPage,
-        required this.page,
-        required this.list,
-    });
-
     int total;
     int perPage;
     int page;
     ListClass list;
+
+    Data({
+       required this.total,
+       required this.perPage,
+       required this.page,
+       required this.list,
+    });
 
     factory Data.fromJson(Map<String, dynamic> json) => Data(
         total: json["total"],
@@ -61,17 +61,17 @@ class Data {
 }
 
 class ListClass {
+    String idSemester;
+    List<ListKela> listKelas;
+
     ListClass({
         required this.idSemester,
         required this.listKelas,
     });
 
-    String idSemester;
-    List<ListKelas> listKelas;
-
     factory ListClass.fromJson(Map<String, dynamic> json) => ListClass(
         idSemester: json["id_semester"],
-        listKelas: List<ListKelas>.from(json["list_kelas"].map((x) => ListKelas.fromJson(x))),
+        listKelas: List<ListKela>.from(json["list_kelas"]!.map((x) => ListKela.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
@@ -80,13 +80,28 @@ class ListClass {
     };
 }
 
-class ListKelas {
-    ListKelas({
+class ListKela {
+    int idKelas;
+    bool statusRps;
+    String kodeKelas;
+    String jamMulai;
+    String jamSelesai;
+    String hari;
+    int idSemester;
+    int jumlahMahasiswa;
+    RuangKuliah ruangKuliah;
+    KelasProdi kelasProdi;
+    Matakuliah matakuliah;
+    Prodi prodi;
+    List<Dosen> dosen;
+
+    ListKela({
         required this.idKelas,
+        required this.statusRps,
         required this.kodeKelas,
-        this.jamMulai,
-        this.jamSelesai,
-        this.hari,
+        required this.jamMulai,
+        required this.jamSelesai,
+        required this.hari,
         required this.idSemester,
         required this.jumlahMahasiswa,
         required this.ruangKuliah,
@@ -96,21 +111,9 @@ class ListKelas {
         required this.dosen,
     });
 
-    int idKelas;
-    String kodeKelas;
-    String? jamMulai;
-    String? jamSelesai;
-    String? hari;
-    int idSemester;
-    int jumlahMahasiswa;
-    RuangKuliah ruangKuliah;
-    KelasProdi kelasProdi;
-    Matakuliah matakuliah;
-    Prodi prodi;
-    List<Dosen> dosen;
-
-    factory ListKelas.fromJson(Map<String, dynamic> json) => ListKelas(
+    factory ListKela.fromJson(Map<String, dynamic> json) => ListKela(
         idKelas: json["id_kelas"],
+        statusRps: json["status_rps"],
         kodeKelas: json["kode_kelas"],
         jamMulai: json["jam_mulai"],
         jamSelesai: json["jam_selesai"],
@@ -121,47 +124,65 @@ class ListKelas {
         kelasProdi: KelasProdi.fromJson(json["kelas_prodi"]),
         matakuliah: Matakuliah.fromJson(json["matakuliah"]),
         prodi: Prodi.fromJson(json["prodi"]),
-        dosen: List<Dosen>.from(json["dosen"].map((x) => Dosen.fromJson(x))),
+        dosen: List<Dosen>.from(json["dosen"]!.map((x) => Dosen.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
         "id_kelas": idKelas,
+        "status_rps": statusRps,
         "kode_kelas": kodeKelas,
         "jam_mulai": jamMulai,
         "jam_selesai": jamSelesai,
         "hari": hari,
         "id_semester": idSemester,
         "jumlah_mahasiswa": jumlahMahasiswa,
-        "ruang_kuliah": ruangKuliah.toJson(),
-        "kelas_prodi": kelasProdi.toJson(),
-        "matakuliah": matakuliah.toJson(),
-        "prodi": prodi.toJson(),
+        "ruang_kuliah": ruangKuliah,
+        "kelas_prodi": kelasProdi,
+        "matakuliah": matakuliah,
+        "prodi": prodi,
         "dosen": List<dynamic>.from(dosen.map((x) => x.toJson())),
     };
 }
 
-class RuangKuliah {
-    RuangKuliah({
-       this.namaRuang,
+class Dosen {
+    int idDosen;
+    String namaPegawai;
+    dynamic gelarDepan;
+    String gelarBelakang;
+    bool xValue;
+
+    Dosen({
+        required this.idDosen,
+        required this.namaPegawai,
+        required this.gelarDepan,
+        required this.gelarBelakang,
+        required this.xValue,
     });
 
-    dynamic namaRuang;
-
-    factory RuangKuliah.fromJson(Map<String, dynamic> json) => RuangKuliah(
-        namaRuang: json["nama_ruang"],
+    factory Dosen.fromJson(Map<String, dynamic> json) => Dosen(
+        idDosen: json["id_dosen"],
+        namaPegawai: json["nama_pegawai"],
+        gelarDepan: json["gelar_depan"],
+        gelarBelakang: json["gelar_belakang"],
+        xValue: json["x_value"],
     );
 
     Map<String, dynamic> toJson() => {
-        "nama_ruang": namaRuang,
+        "id_dosen": idDosen,
+        "nama_pegawai": namaPegawai,
+        "gelar_depan": gelarDepan,
+        "gelar_belakang": gelarBelakang,
+        "x_value": xValue,
     };
 }
 
-class KelasProdi {
-    KelasProdi({
-       this.namaKelasProdi,
-    });
 
-    dynamic namaKelasProdi;
+class KelasProdi {
+    String namaKelasProdi;
+
+    KelasProdi({
+        required this.namaKelasProdi,
+    });
 
     factory KelasProdi.fromJson(Map<String, dynamic> json) => KelasProdi(
         namaKelasProdi: json["nama_kelas_prodi"],
@@ -172,7 +193,14 @@ class KelasProdi {
     };
 }
 
+
 class Matakuliah {
+    int idMatakuliah;
+    String namaMatakuliah;
+    String kodeMatakuliah;
+    dynamic uploadNilai;
+    String sksTotal;
+
     Matakuliah({
         required this.idMatakuliah,
         required this.namaMatakuliah,
@@ -180,12 +208,6 @@ class Matakuliah {
         this.uploadNilai,
         required this.sksTotal,
     });
-
-    int idMatakuliah;
-    String namaMatakuliah;
-    String kodeMatakuliah;
-    dynamic uploadNilai;
-    String sksTotal;
 
     factory Matakuliah.fromJson(Map<String, dynamic> json) => Matakuliah(
         idMatakuliah: json["id_matakuliah"],
@@ -204,14 +226,15 @@ class Matakuliah {
     };
 }
 
-class Prodi {
-    Prodi({
-        required this.namaProdi,
-        required this.strata,
-    });
 
-    String namaProdi;
-    String strata;
+class Prodi {
+    dynamic namaProdi;
+    dynamic strata;
+
+    Prodi({
+        this.namaProdi,
+        this.strata,
+    });
 
     factory Prodi.fromJson(Map<String, dynamic> json) => Prodi(
         namaProdi: json["nama_prodi"],
@@ -224,31 +247,22 @@ class Prodi {
     };
 }
 
-class Dosen {
-    Dosen({
-        required this.idDosen,
-        required this.namaPegawai,
-        this.gelarDepan,
-        required this.gelarBelakang,
+
+
+
+class RuangKuliah {
+    dynamic namaRuang;
+
+    RuangKuliah({
+        this.namaRuang,
     });
 
-    int idDosen;
-    String namaPegawai;
-    dynamic gelarDepan;
-    String gelarBelakang;
-
-    factory Dosen.fromJson(Map<String, dynamic> json) => Dosen(
-        idDosen: json["id_dosen"],
-        namaPegawai: json["nama_pegawai"],
-        gelarDepan: json["gelar_depan"],
-        gelarBelakang: json["gelar_belakang"],
+    factory RuangKuliah.fromJson(Map<String, dynamic> json) => RuangKuliah(
+        namaRuang: json["nama_ruang"],
     );
 
     Map<String, dynamic> toJson() => {
-        "id_dosen": idDosen,
-        "nama_pegawai": namaPegawai,
-        "gelar_depan": gelarDepan,
-        "gelar_belakang": gelarBelakang,
+        "nama_ruang": namaRuang,
     };
 }
 

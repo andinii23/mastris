@@ -20,7 +20,7 @@ class _TagihanMhsState extends State<TagihanMhs> {
     var response = await http.get(Uri.parse(tagihan), headers: header);
     var data = jsonDecode(response.body.toString());
     if (response.statusCode == 200) {
-      print(response.body);
+      // print(response.body);
       return TagihanModel.fromJson(data);
     } else {
       return TagihanModel.fromJson(data);

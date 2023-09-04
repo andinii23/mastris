@@ -8,6 +8,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mastrisunja/elista/developpage.dart';
+import 'package:mastrisunja/elista/dosen/arsip/arsipberitaacara.dart';
+import 'package:mastrisunja/elista/dosen/homedosen.dart';
+import 'package:mastrisunja/elista/dosen/mhsbimbingan/detailmhsbim.dart';
+import 'package:mastrisunja/elista/dosen/mhsbimbingan/jadwalujian.dart';
+import 'package:mastrisunja/elista/dosen/mhsbimbingan/mhsbimbingan.dart';
+import 'package:mastrisunja/elista/dosen/mhsbimbingan/timeline.dart';
+import 'package:mastrisunja/elista/mhs/bimbingan/agendabimbingan.dart';
+import 'package:mastrisunja/elista/mhs/bimbingan/daftarsempro.dart';
+import 'package:mastrisunja/elista/mhs/bimbingan/datapenelitian.dart';
+import 'package:mastrisunja/elista/mhs/homemhselista.dart';
+import 'package:mastrisunja/elista/mhs/prosesbimbingan.dart';
 import 'package:mastrisunja/siakad/home/berita/beritaunja.dart';
 import 'package:mastrisunja/siakad/home/berita/detailberita.dart';
 import 'package:mastrisunja/siakad/home/berita/homepage.dart';
@@ -189,7 +200,23 @@ class _MyAppState extends State<MyApp> {
         'tambahmonitor': (context) => const TambahPertemuan(),
         'editmonitor': (context) => const EditMonitoringKuliah(),
         'gantipass': (context) => const GantiPassword(),
+
+        // elista
         'develop': (context) => const DevelopPage(),
+        // mhs
+        'homemhselista': (context) => const HomeMhsElista(),
+        'mhsagendabimbingan': (context) => const AgendaBimbingan(),
+        'datapenelitian': (context) => const DataPenelitian(),
+        'prosesbimbingan': (context) => const ProsesBimbingan(),
+        'sempro': (context) => const DaftarSempro(),
+
+        // dosen
+        'homedosenelista': (context) => const HomeDosenElista(),
+        'mhsbimbinganelista': (context) => const MhsBimbinganElista(),
+        'detailmhsbim': (context) => const DetailMhsBimbingan(),
+        'mhsbimtimeline': (context) => const Timeline(),
+        'arsipberitaacara': (context) => const ArsipBeritaAcara(),
+        'jadwalujian': (context) => const JadwalUjian(),
       },
     );
   }

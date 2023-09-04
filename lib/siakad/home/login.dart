@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sp_util/sp_util.dart';
@@ -21,6 +22,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  final _secureStorage = const FlutterSecureStorage();
   final _formState = GlobalKey<FormState>();
   String? _usernameError;
   String? _passwordError;
@@ -30,8 +32,21 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    // Check the app version before showing the login page
+
     _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
+    // Retrieve saved username and password from secure storage
+    _secureStorage.read(key: 'username').then((value) {
+      if (value != null) {
+        _usernameController.text = value;
+      }
+    });
+    _secureStorage.read(key: 'password').then((value) {
+      if (value != null) {
+        _passwordController.text = value;
+      }
+    });
+
     _checkAppVersion();
   }
 
@@ -107,15 +122,17 @@ class _LoginPageState extends State<LoginPage> {
     final size = MediaQuery.of(context).size;
     return SafeArea(
         child: ScaffoldMessenger(
-          key: _scaffoldMessengerKey,
-          child: Scaffold(
-              appBar: AppBar(
+      key: _scaffoldMessengerKey,
+      child: Scaffold(
+        appBar: AppBar(
           centerTitle: true,
           title: Text(
             "",
             textAlign: TextAlign.start,
             style: TextStyle(
-                fontSize: 20, color: mainBlackColor, fontWeight: FontWeight.w700),
+                fontSize: 20,
+                color: mainBlackColor,
+                fontWeight: FontWeight.w700),
           ),
           elevation: 0.0,
           backgroundColor: Colors.transparent,
@@ -128,8 +145,8 @@ class _LoginPageState extends State<LoginPage> {
               Navigator.pushNamed(context, 'gerbangpage');
             },
           ),
-              ),
-              body: SingleChildScrollView(
+        ),
+        body: SingleChildScrollView(
           child: Container(
             // margin: const EdgeInsets.only(top: 20),
             padding: const EdgeInsets.all(20),
@@ -225,7 +242,7 @@ class _LoginPageState extends State<LoginPage> {
                           const SizedBox(
                             height: 5,
                           ),
-                            if (_passwordError != null)
+                          if (_passwordError != null)
                             Text(
                               _passwordError!,
                               style: const TextStyle(
@@ -261,9 +278,9 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
           ),
-              ),
-            ),
-        ));
+        ),
+      ),
+    ));
   }
 
   Future<void> _loginToApp() async {
@@ -280,6 +297,13 @@ class _LoginPageState extends State<LoginPage> {
       SpUtil.putString("username", loginModel.data.list.user.username);
       SpUtil.putString("usertype", loginModel.data.list.user.usertype);
       SpUtil.putBool("isLogin", true);
+
+      // Save username and password to secure storage
+      await _secureStorage.write(
+          key: 'username', value: _usernameController.text);
+      await _secureStorage.write(
+          key: 'password', value: _passwordController.text);
+
       Navigator.pushNamed(context, 'homepage');
     } else {
       var body = jsonDecode(response.body);
@@ -309,9 +333,9 @@ class _LoginPageState extends State<LoginPage> {
         const SnackBar(
           content: Text("Login gagal: username atau password salah!"),
           duration: Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
         ),
       );
-    
     }
   }
 }

@@ -16,12 +16,12 @@ class KhsMhs extends StatefulWidget {
 }
 
 class _KhsMhsState extends State<KhsMhs> {
-  String? idSem;
+  dynamic idSem;
 
   Future<KhsDetailModel> getDetailKhs() async {
     var header = {"Authorization": "Bearer ${SpUtil.getString("token")}"};
     var response = await http.get(
-        Uri.parse("https://ws.unja.ac.id/api/siakad/khs?id_semester=$idSem"),
+        Uri.parse(dkhs + idSem.toString()),
         headers: header);
     var data = jsonDecode(response.body.toString());
     if (response.statusCode == 200) {

@@ -58,7 +58,7 @@ class _ChatMhsState extends State<ChatMhs> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    Navigator.pushNamed(context, 'navbar');
+                                    Navigator.pop(context);
                                   },
                                   child: Icon(
                                     Icons.arrow_back_ios,

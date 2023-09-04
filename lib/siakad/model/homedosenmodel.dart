@@ -67,6 +67,7 @@ class ListClass {
     required this.namaDosen,
     this.gelarDepan,
     required this.gelarBelakang,
+    this.nip,
     required this.lokasiPresensi,
     required this.prodi,
     this.foto,
@@ -78,6 +79,7 @@ class ListClass {
   String namaDosen;
   dynamic gelarDepan;
   String gelarBelakang;
+  dynamic nip;
   String lokasiPresensi;
   Prodi prodi;
   dynamic foto;
@@ -89,6 +91,7 @@ class ListClass {
         namaDosen: json["nama_dosen"],
         gelarDepan: json["gelar_depan"],
         gelarBelakang: json["gelar_belakang"],
+        nip: json["nip"],
         lokasiPresensi: json["lokasi_presensi"],
         prodi: Prodi.fromJson(json["prodi"]),
         foto: json["foto"],
@@ -103,6 +106,7 @@ class ListClass {
         "nama_dosen": namaDosen,
         "gelar_depan": gelarDepan,
         "gelar_belakang": gelarBelakang,
+        "nip": nip,
         "lokasi_presensi": lokasiPresensi,
         "prodi": prodi.toJson(),
         "foto": foto,

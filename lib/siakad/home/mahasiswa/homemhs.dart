@@ -1,7 +1,6 @@
 // ignore_for_file: camel_case_types
 
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:sp_util/sp_util.dart';
@@ -69,7 +68,7 @@ class _HomeMhsState extends State<HomeMhs> {
                                 ),
                                 child: RichText(
                                   text: TextSpan(
-                                      text: "Haii, ",
+                                      text: "Selamat Datang, ",
                                       style: const TextStyle(fontSize: 18),
                                       children: [
                                         TextSpan(
@@ -533,7 +532,7 @@ class StatusCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         constraints: const BoxConstraints(
-            minWidth: 90.0, maxWidth: 100.0, minHeight: 70.0),
+            minWidth: 90.0, maxWidth: 110.0, minHeight: 70.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [

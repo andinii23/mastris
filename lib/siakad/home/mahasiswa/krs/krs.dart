@@ -728,7 +728,7 @@ class _KrsMhsState extends State<KrsMhs> {
 
                       if (snapshot.data!.data.list.status.toString() != "1" &&
                           snapshot.data!.data.list.status.toString() != "2" &&
-                          DateTime.now().isBefore(tanggalAkhir) &&
+                          DateTime.now().isAfter(tanggalAkhir) &&
                           snapshot.data!.data.list.listKrs.isNotEmpty)
                         (GestureDetector(
                           onTap: () {

@@ -15,7 +15,7 @@ class HomeDosen extends StatefulWidget {
 }
 
 class _HomeDosenState extends State<HomeDosen> {
-    Future<HomeDosenModel> getHomeDosenData() async {
+  Future<HomeDosenModel> getHomeDosenData() async {
     var header = {"Authorization": "Bearer ${SpUtil.getString("token")}"};
     var response = await http.get(Uri.parse(home), headers: header);
     var data = jsonDecode(response.body.toString());
@@ -26,6 +26,7 @@ class _HomeDosenState extends State<HomeDosen> {
       return HomeDosenModel.fromJson(data);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,31 +63,34 @@ class _HomeDosenState extends State<HomeDosen> {
                             ),
                             Expanded(
                               child: Container(
-                                                     
                                 margin: const EdgeInsets.only(
                                   top: 70,
                                 ),
                                 child: RichText(
                                   text: TextSpan(
-                                      text: "Haii, ",
-                                      style: const TextStyle(fontSize: 18),
+                                      text: "Selamat Datang, ",
+                                      style: const TextStyle(fontSize: 16),
                                       children: [
-                                        if(snapshot.data!.data.list.gelarDepan.toString() != "null")
-                                        (TextSpan(
-                                          text:
-                                              "${snapshot.data!.data.list.gelarDepan} ${snapshot.data!.data.list.namaDosen} ${snapshot.data!.data.list.gelarBelakang}",
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        )),
-                                         if(snapshot.data!.data.list.gelarDepan.toString() == "null")
-                                        (TextSpan(
-                                          text:
-                                              "${snapshot.data!.data.list.namaDosen} ${snapshot.data!.data.list.gelarBelakang}",
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        )),
+                                        if (snapshot.data!.data.list.gelarDepan
+                                                .toString() !=
+                                            "null")
+                                          (TextSpan(
+                                            text:
+                                                "${snapshot.data!.data.list.gelarDepan} ${snapshot.data!.data.list.namaDosen} ${snapshot.data!.data.list.gelarBelakang}",
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold),
+                                          )),
+                                        if (snapshot.data!.data.list.gelarDepan
+                                                .toString() ==
+                                            "null")
+                                          (TextSpan(
+                                            text:
+                                                "${snapshot.data!.data.list.namaDosen} ${snapshot.data!.data.list.gelarBelakang}",
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold),
+                                          )),
                                       ]),
                                 ),
                               ),
@@ -142,55 +146,84 @@ class _HomeDosenState extends State<HomeDosen> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                if(snapshot.data!.data.list.gelarDepan.toString() == "null")
-                                                (Text(
-                                                  "${snapshot.data!.data.list.namaDosen} ${snapshot.data!.data.list.gelarBelakang}",
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: mainWhiteColor),
-                                                )),
-                                                if(snapshot.data!.data.list.gelarDepan.toString() != "null")
-                                                (Text(
-                                                  "${snapshot.data!.data.list.gelarDepan} ${snapshot.data!.data.list.namaDosen} ${snapshot.data!.data.list.gelarBelakang}",
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: mainWhiteColor),
-                                                )),
+                                                if (snapshot.data!.data.list
+                                                        .gelarDepan
+                                                        .toString() ==
+                                                    "null")
+                                                  (Text(
+                                                    "${snapshot.data!.data.list.namaDosen} ${snapshot.data!.data.list.gelarBelakang}",
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: mainWhiteColor),
+                                                  )),
+                                                if (snapshot.data!.data.list
+                                                        .gelarDepan
+                                                        .toString() !=
+                                                    "null")
+                                                  (Text(
+                                                    "${snapshot.data!.data.list.gelarDepan} ${snapshot.data!.data.list.namaDosen} ${snapshot.data!.data.list.gelarBelakang}",
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: mainWhiteColor),
+                                                  )),
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
                                                 Text(
-                                                  snapshot.data!.data.list
-                                                      .fakultas.namaFakultas,
+                                                  "NIP : ${snapshot.data!.data.list.nip.toString()}",
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.white,
+                                                    // fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  "Nama Pengguna : ${SpUtil.getString("username")!}",
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                 Text(
+                                                  "Otoritas : ${SpUtil.getString("usertype")!}",
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                Text("Fakultas : ${snapshot.data!.data.list
+                                                      .fakultas.namaFakultas}",
                                                   style: TextStyle(
-                                                      fontSize: 16,
+                                                      fontSize: 14,
+                                                      color: mainWhiteColor),
+                                                ),
+                                                Text("Prodi : ${snapshot.data!.data.list.prodi
+                                                      .namaProdi}",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
                                                       color: mainWhiteColor),
                                                 ),
                                                 Text(
-                                                  snapshot.data!.data.list.prodi
-                                                      .namaProdi,
+                                                  "Lokasi Presensi : ${snapshot.data!.data.list.lokasiPresensi}",
                                                   style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: mainWhiteColor),
-                                                ),
-                                                Text(
-                                                  snapshot.data!.data.list
-                                                      .lokasiPresensi,
-                                                  style: TextStyle(
-                                                      fontSize: 16,
+                                                      fontSize: 14,
                                                       color: mainWhiteColor),
                                                 ),
                                               ],
                                             ),
                                           ),
-                                          if(snapshot
-                                                  .data!.data.list.foto.toString().isNotEmpty)
-                                          (SizedBox(
-                                              width: 100,
-                                              height: 100,
-                                              child: Image.network(snapshot
-                                                  .data!.data.list.foto))),
+                                          if (snapshot.data!.data.list.foto
+                                              .toString()
+                                              .isNotEmpty)
+                                            (SizedBox(
+                                                width: 100,
+                                                height: 100,
+                                                child: Image.network(snapshot
+                                                    .data!.data.list.foto))),
                                         ],
                                       ),
                                       const SizedBox(
@@ -258,8 +291,8 @@ class _HomeDosenState extends State<HomeDosen> {
                                               width: 80,
                                               child: InkWell(
                                                 onTap: () {
-                                                  Navigator.pushNamed(context,
-                                                      'mhsbimbingan');
+                                                  Navigator.pushNamed(
+                                                      context, 'mhsbimbingan');
                                                 },
                                                 child: const menuAkademik(
                                                   image:

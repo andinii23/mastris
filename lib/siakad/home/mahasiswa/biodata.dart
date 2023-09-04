@@ -3,11 +3,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sp_util/sp_util.dart';
 import 'package:http/http.dart' as http;
 import '../../model/biomhsmodel.dart';
 import '../../settings/constant.dart';
-
 
 class BiodataMhs extends StatefulWidget {
   const BiodataMhs({super.key});
@@ -85,6 +85,12 @@ class _BiodataMhsState extends State<BiodataMhs> with TickerProviderStateMixin {
                   FutureBuilder<BioMhsModel>(
                     future: getBioMhsData(),
                     builder: (context, snapshot) {
+                      String tglLahir = snapshot.data!.data.list.tanggalLahir;
+                      DateTime tglLahirD = DateTime.parse(tglLahir);
+
+                      DateFormat dateFormat = DateFormat('dd-MM-yyyy');
+                      String tgllahirFormatted = dateFormat.format(tglLahirD);
+                    
                       if (snapshot.hasData) {
                         return SingleChildScrollView(
                           child: Column(
@@ -251,8 +257,7 @@ class _BiodataMhsState extends State<BiodataMhs> with TickerProviderStateMixin {
                                       ],
                                     ),
                                     child: Text(
-                                      snapshot.data!.data.list.tanggalLahir
-                                          .toString(),
+                                      tgllahirFormatted.toString(),
                                       style: TextStyle(
                                         color: mainBlackColor,
                                         fontSize: 14,
@@ -851,6 +856,19 @@ class _BiodataMhsState extends State<BiodataMhs> with TickerProviderStateMixin {
                     future: getBioMhsData(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
+                        String tglLahirAyah =
+                            snapshot.data!.data.list.tanggalLahirAyah;
+                        DateTime tglLahirDAyah = DateTime.parse(tglLahirAyah);
+                        String tglLahirIbu =
+                            snapshot.data!.data.list.tanggalLahirIbu;
+                        DateTime tglLahirDIbu = DateTime.parse(tglLahirIbu);
+
+                        DateFormat dateFormat = DateFormat('dd-MM-yyyy');
+
+                        String tgllahirAyahFormatted =
+                            dateFormat.format(tglLahirDAyah);
+                        String tgllahirIbuFormatted =
+                            dateFormat.format(tglLahirDIbu);
                         return SingleChildScrollView(
                           child: Column(
                             children: [
@@ -991,9 +1009,7 @@ class _BiodataMhsState extends State<BiodataMhs> with TickerProviderStateMixin {
                                             ],
                                           ),
                                           child: Text(
-                                            snapshot.data!.data.list
-                                                .tanggalLahirAyah
-                                                .toString(),
+                                            tgllahirAyahFormatted.toString(),
                                             style: TextStyle(
                                               color: mainBlackColor,
                                               fontSize: 14,
@@ -1359,9 +1375,7 @@ class _BiodataMhsState extends State<BiodataMhs> with TickerProviderStateMixin {
                                             ],
                                           ),
                                           child: Text(
-                                            snapshot
-                                                .data!.data.list.tanggalLahirIbu
-                                                .toString(),
+                                            tgllahirIbuFormatted.toString(),
                                             style: TextStyle(
                                               color: mainBlackColor,
                                               fontSize: 14,
@@ -1391,69 +1405,78 @@ class _BiodataMhsState extends State<BiodataMhs> with TickerProviderStateMixin {
                                         const SizedBox(
                                           height: 5,
                                         ),
-                                        if(snapshot.data!.data.list.teleponIbu
-                                                .toString() != "null")
-                                        (Container(
-                                          margin: const EdgeInsets.only(
-                                              left: 10, right: 10, bottom: 10),
-                                          padding: const EdgeInsets.all(10),
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: const Color(0xFF1E3B78)
-                                                    .withOpacity(0.1),
-                                                spreadRadius: 5,
-                                                blurRadius: 4,
-                                                offset: const Offset(0,
-                                                    3), // changes position of shadow
-                                              ),
-                                            ],
-                                          ),
-                                          child: Text(
-                                            snapshot.data!.data.list.teleponIbu
-                                                .toString(),
-                                            style: TextStyle(
-                                              color: mainBlackColor,
-                                              fontSize: 14,
+                                        if (snapshot.data!.data.list.teleponIbu
+                                                .toString() !=
+                                            "null")
+                                          (Container(
+                                            margin: const EdgeInsets.only(
+                                                left: 10,
+                                                right: 10,
+                                                bottom: 10),
+                                            padding: const EdgeInsets.all(10),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: const Color(0xFF1E3B78)
+                                                      .withOpacity(0.1),
+                                                  spreadRadius: 5,
+                                                  blurRadius: 4,
+                                                  offset: const Offset(0,
+                                                      3), // changes position of shadow
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                        )),
-                                        if(snapshot.data!.data.list.teleponIbu
-                                                .toString() == "null")
-                                        (Container(
-                                          margin: const EdgeInsets.only(
-                                              left: 10, right: 10, bottom: 10),
-                                          padding: const EdgeInsets.all(10),
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: const Color(0xFF1E3B78)
-                                                    .withOpacity(0.1),
-                                                spreadRadius: 5,
-                                                blurRadius: 4,
-                                                offset: const Offset(0,
-                                                    3), // changes position of shadow
+                                            child: Text(
+                                              snapshot
+                                                  .data!.data.list.teleponIbu
+                                                  .toString(),
+                                              style: TextStyle(
+                                                color: mainBlackColor,
+                                                fontSize: 14,
                                               ),
-                                            ],
-                                          ),
-                                          child: Text(
-                                            "-",
-                                            style: TextStyle(
-                                              color: mainBlackColor,
-                                              fontSize: 14,
                                             ),
-                                          ),
-                                        )),
+                                          )),
+                                        if (snapshot.data!.data.list.teleponIbu
+                                                .toString() ==
+                                            "null")
+                                          (Container(
+                                            margin: const EdgeInsets.only(
+                                                left: 10,
+                                                right: 10,
+                                                bottom: 10),
+                                            padding: const EdgeInsets.all(10),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: const Color(0xFF1E3B78)
+                                                      .withOpacity(0.1),
+                                                  spreadRadius: 5,
+                                                  blurRadius: 4,
+                                                  offset: const Offset(0,
+                                                      3), // changes position of shadow
+                                                ),
+                                              ],
+                                            ),
+                                            child: Text(
+                                              "-",
+                                              style: TextStyle(
+                                                color: mainBlackColor,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          )),
                                       ],
                                     ),
                                     Column(
@@ -1612,7 +1635,8 @@ class _BiodataMhsState extends State<BiodataMhs> with TickerProviderStateMixin {
                                           ),
                                           child: Text(
                                             snapshot.data!.data.list
-                                                .penghasilanIbu.namaPenghasilan.toString(),
+                                                .penghasilanIbu.namaPenghasilan
+                                                .toString(),
                                             style: TextStyle(
                                               color: mainBlackColor,
                                               fontSize: 14,
@@ -1684,69 +1708,77 @@ class _BiodataMhsState extends State<BiodataMhs> with TickerProviderStateMixin {
                                         const SizedBox(
                                           height: 5,
                                         ),
-                                        if(snapshot.data!.data.list.namaWali
-                                                .toString() != "null")
-                                        (Container(
-                                          margin: const EdgeInsets.only(
-                                              left: 10, right: 10, bottom: 10),
-                                          padding: const EdgeInsets.all(10),
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: const Color(0xFF1E3B78)
-                                                    .withOpacity(0.1),
-                                                spreadRadius: 5,
-                                                blurRadius: 4,
-                                                offset: const Offset(0,
-                                                    3), // changes position of shadow
-                                              ),
-                                            ],
-                                          ),
-                                          child: Text(
-                                            snapshot.data!.data.list.namaWali
-                                                .toString(),
-                                            style: TextStyle(
-                                              color: mainBlackColor,
-                                              fontSize: 14,
+                                        if (snapshot.data!.data.list.namaWali
+                                                .toString() !=
+                                            "null")
+                                          (Container(
+                                            margin: const EdgeInsets.only(
+                                                left: 10,
+                                                right: 10,
+                                                bottom: 10),
+                                            padding: const EdgeInsets.all(10),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: const Color(0xFF1E3B78)
+                                                      .withOpacity(0.1),
+                                                  spreadRadius: 5,
+                                                  blurRadius: 4,
+                                                  offset: const Offset(0,
+                                                      3), // changes position of shadow
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                        )),
-                                        if(snapshot.data!.data.list.namaWali
-                                                .toString() == "null")
-                                        (Container(
-                                          margin: const EdgeInsets.only(
-                                              left: 10, right: 10, bottom: 10),
-                                          padding: const EdgeInsets.all(10),
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: const Color(0xFF1E3B78)
-                                                    .withOpacity(0.1),
-                                                spreadRadius: 5,
-                                                blurRadius: 4,
-                                                offset: const Offset(0,
-                                                    3), // changes position of shadow
+                                            child: Text(
+                                              snapshot.data!.data.list.namaWali
+                                                  .toString(),
+                                              style: TextStyle(
+                                                color: mainBlackColor,
+                                                fontSize: 14,
                                               ),
-                                            ],
-                                          ),
-                                          child: Text(
-                                            "-",
-                                            style: TextStyle(
-                                              color: mainBlackColor,
-                                              fontSize: 14,
                                             ),
-                                          ),
-                                        )),
+                                          )),
+                                        if (snapshot.data!.data.list.namaWali
+                                                .toString() ==
+                                            "null")
+                                          (Container(
+                                            margin: const EdgeInsets.only(
+                                                left: 10,
+                                                right: 10,
+                                                bottom: 10),
+                                            padding: const EdgeInsets.all(10),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: const Color(0xFF1E3B78)
+                                                      .withOpacity(0.1),
+                                                  spreadRadius: 5,
+                                                  blurRadius: 4,
+                                                  offset: const Offset(0,
+                                                      3), // changes position of shadow
+                                                ),
+                                              ],
+                                            ),
+                                            child: Text(
+                                              "-",
+                                              style: TextStyle(
+                                                color: mainBlackColor,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          )),
                                       ],
                                     ),
                                     Column(
@@ -1824,72 +1856,80 @@ class _BiodataMhsState extends State<BiodataMhs> with TickerProviderStateMixin {
                                         const SizedBox(
                                           height: 5,
                                         ),
-                                        if(snapshot.data!.data.list
+                                        if (snapshot.data!.data.list
                                                 .pekerjaanWali.namaPekerjaan
-                                                .toString() != "null")
-                                        (Container(
-                                          margin: const EdgeInsets.only(
-                                              left: 10, right: 10, bottom: 10),
-                                          padding: const EdgeInsets.all(10),
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: const Color(0xFF1E3B78)
-                                                    .withOpacity(0.1),
-                                                spreadRadius: 5,
-                                                blurRadius: 4,
-                                                offset: const Offset(0,
-                                                    3), // changes position of shadow
-                                              ),
-                                            ],
-                                          ),
-                                          child: Text(
-                                            snapshot.data!.data.list
-                                                .pekerjaanWali.namaPekerjaan
-                                                .toString(),
-                                            style: TextStyle(
-                                              color: mainBlackColor,
-                                              fontSize: 14,
+                                                .toString() !=
+                                            "null")
+                                          (Container(
+                                            margin: const EdgeInsets.only(
+                                                left: 10,
+                                                right: 10,
+                                                bottom: 10),
+                                            padding: const EdgeInsets.all(10),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: const Color(0xFF1E3B78)
+                                                      .withOpacity(0.1),
+                                                  spreadRadius: 5,
+                                                  blurRadius: 4,
+                                                  offset: const Offset(0,
+                                                      3), // changes position of shadow
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                        )),
-                                        if(snapshot.data!.data.list
-                                                .pekerjaanWali.namaPekerjaan
-                                                .toString() == "null")
-                                        (Container(
-                                          margin: const EdgeInsets.only(
-                                              left: 10, right: 10, bottom: 10),
-                                          padding: const EdgeInsets.all(10),
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: const Color(0xFF1E3B78)
-                                                    .withOpacity(0.1),
-                                                spreadRadius: 5,
-                                                blurRadius: 4,
-                                                offset: const Offset(0,
-                                                    3), // changes position of shadow
+                                            child: Text(
+                                              snapshot.data!.data.list
+                                                  .pekerjaanWali.namaPekerjaan
+                                                  .toString(),
+                                              style: TextStyle(
+                                                color: mainBlackColor,
+                                                fontSize: 14,
                                               ),
-                                            ],
-                                          ),
-                                          child: Text(
-                                            "-",
-                                            style: TextStyle(
-                                              color: mainBlackColor,
-                                              fontSize: 14,
                                             ),
-                                          ),
-                                        )),
+                                          )),
+                                        if (snapshot.data!.data.list
+                                                .pekerjaanWali.namaPekerjaan
+                                                .toString() ==
+                                            "null")
+                                          (Container(
+                                            margin: const EdgeInsets.only(
+                                                left: 10,
+                                                right: 10,
+                                                bottom: 10),
+                                            padding: const EdgeInsets.all(10),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: const Color(0xFF1E3B78)
+                                                      .withOpacity(0.1),
+                                                  spreadRadius: 5,
+                                                  blurRadius: 4,
+                                                  offset: const Offset(0,
+                                                      3), // changes position of shadow
+                                                ),
+                                              ],
+                                            ),
+                                            child: Text(
+                                              "-",
+                                              style: TextStyle(
+                                                color: mainBlackColor,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          )),
                                       ],
                                     ),
                                     Column(
@@ -1993,12 +2033,9 @@ class _BiodataMhsState extends State<BiodataMhs> with TickerProviderStateMixin {
                                             ],
                                           ),
                                           child: Text(
-                                            snapshot
-                                                .data!
-                                                .data
-                                                .list
-                                                .penghasilanWali
-                                                .namaPenghasilan.toString(),
+                                            snapshot.data!.data.list
+                                                .penghasilanWali.namaPenghasilan
+                                                .toString(),
                                             style: TextStyle(
                                               color: mainBlackColor,
                                               fontSize: 14,

@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:mastrisunja/siakad/home/dosen/monitorkuliah/editmonitor.dart';
+import 'package:mastrisunja/siakad/home/dosen/monitorkuliah/tambahmonitor.dart';
 import 'package:sp_util/sp_util.dart';
-
 import '../../../model/monitorkuliahperkelasmodel.dart';
 import '../../../settings/constant.dart';
-
 
 class MonitorPerkelas extends StatefulWidget {
   const MonitorPerkelas({super.key});
@@ -21,13 +21,15 @@ class MonitorPerkelas extends StatefulWidget {
 
 class _MonitorPerkelasState extends State<MonitorPerkelas> {
   String idMonitor = "";
+
   Future<MonitorKuliahPerkelasModel> getDetailData() async {
     var header = {"Authorization": "Bearer ${SpUtil.getString("token")}"};
-    var response = await http
-        .get(Uri.parse(monitorperkelas + SpUtil.getString("id_kelass")!), headers: header);
+    var response = await http.get(
+        Uri.parse(monitorperkelas + SpUtil.getString("id_kelass")!),
+        headers: header);
     var data = jsonDecode(response.body.toString());
     if (response.statusCode == 200) {
-      print(response.body);
+      // print(response.body);
       return MonitorKuliahPerkelasModel.fromJson(data);
     } else {
       return MonitorKuliahPerkelasModel.fromJson(data);
@@ -49,19 +51,27 @@ class _MonitorPerkelasState extends State<MonitorPerkelas> {
         elevation: 0.0,
         backgroundColor: Colors.transparent,
         leading: InkWell(
-          child: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ),
-          onTap: () {
-            Navigator.pushNamed(context, 'monitorkuliah');
-          },
-        ),
+            child: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+            ),
+            onTap: () {
+              Navigator.pop(context);
+            }),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          // FutureBuilder(
+          //     future: getMonitor(),
+          //     builder: (context, snapshot) {
+          //       if (snapshot.hasData) {
+          //         return Text("data");
+          //       } else {
+          //         return Text("tdk");
+          //       }
+          //     }),
           Expanded(
             child: FutureBuilder<MonitorKuliahPerkelasModel>(
                 future: getDetailData(),
@@ -78,13 +88,14 @@ class _MonitorPerkelasState extends State<MonitorPerkelas> {
                           child: ListView.builder(
                               scrollDirection: Axis.vertical,
                               shrinkWrap: true,
-                              itemCount: snapshot.data!.data.list.length,
+                              itemCount: snapshot.data!.data.list.listMonitoringPerkuliahan.length,
                               itemBuilder: (context, index) {
-                                idMonitor = snapshot.data!.data.list[index]
+                                idMonitor = snapshot
+                                    .data!
+                                    .data.list.listMonitoringPerkuliahan[index]
                                     .idMonitoringPerkuliahan
                                     .toString();
-                                String tgl =
-                                    snapshot.data!.data.list[index].tanggal;
+                                String tgl = snapshot.data!.data.list.listMonitoringPerkuliahan[index].tanggal;
                                 DateTime tanggal = DateTime.parse(tgl);
                                 DateFormat dateFormat =
                                     DateFormat('dd-MM-yyyy');
@@ -128,8 +139,12 @@ class _MonitorPerkelasState extends State<MonitorPerkelas> {
                                               ),
                                             ),
                                             child: Text(
-                                              snapshot.data!.data.list[index]
-                                                  .materi,
+                                              snapshot
+                                                  .data!
+                                                  .data.list.listMonitoringPerkuliahan[
+                                                      index]
+                                                  .materi
+                                                  .toString(),
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   color: mainWhiteColor,
@@ -155,20 +170,22 @@ class _MonitorPerkelasState extends State<MonitorPerkelas> {
                                                   scrollDirection:
                                                       Axis.vertical,
                                                   shrinkWrap: true,
-                                                  itemCount: snapshot.data!.data
-                                                      .list[index].dosen.length,
+                                                  itemCount: snapshot
+                                                      .data!
+                                                      .data.list.listMonitoringPerkuliahan[index]
+                                                      .dosen.length,
                                                   itemBuilder:
                                                       (context, dosen) {
                                                     if (snapshot
                                                             .data!
-                                                            .data
-                                                            .list[index]
+                                                            .data.list.listMonitoringPerkuliahan[index]
                                                             .dosen[dosen]
-                                                            .gelarDepan !=
-                                                        null) {
+                                                            .gelarDepan
+                                                            .toString() !=
+                                                        "null") {
                                                       return Center(
                                                         child: Text(
-                                                          "${snapshot.data!.data.list[index].dosen[dosen].gelarDepan.toString()} ${snapshot.data!.data.list[index].dosen[dosen].namaPegawai.toString()} ${snapshot.data!.data.list[index].dosen[dosen].gelarBelakang.toString()}",
+                                                          "${snapshot.data!.data.list.listMonitoringPerkuliahan[index].dosen[dosen].gelarDepan.toString()} ${snapshot.data!.data.list.listMonitoringPerkuliahan[index].dosen[dosen].namaPegawai.toString()} ${snapshot.data!.data.list.listMonitoringPerkuliahan[index].dosen[dosen].gelarBelakang.toString()}",
                                                           style: TextStyle(
                                                             color:
                                                                 mainBlueColor,
@@ -179,7 +196,7 @@ class _MonitorPerkelasState extends State<MonitorPerkelas> {
                                                     } else {
                                                       return Center(
                                                         child: Text(
-                                                          "${snapshot.data!.data.list[index].dosen[dosen].namaPegawai.toString()} ${snapshot.data!.data.list[index].dosen[dosen].gelarBelakang.toString()}",
+                                                          "${snapshot.data!.data.list.listMonitoringPerkuliahan[index].dosen[dosen].namaPegawai.toString()} ${snapshot.data!.data.list.listMonitoringPerkuliahan[index].dosen[dosen].gelarBelakang.toString()}",
                                                           style: TextStyle(
                                                             color:
                                                                 mainBlueColor,
@@ -208,7 +225,7 @@ class _MonitorPerkelasState extends State<MonitorPerkelas> {
                                           ),
 
                                           Text(
-                                            "Jam : ${snapshot.data!.data.list[index].jamMulai.toString()} - ${snapshot.data!.data.list[index].jamSelesai.toString()}",
+                                            "Jam : ${snapshot.data!.data.list.listMonitoringPerkuliahan[index].jamMulai.toString()} - ${snapshot.data!.data.list.listMonitoringPerkuliahan[index].jamSelesai.toString()}",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               color: mainBlueColor,
@@ -237,10 +254,9 @@ class _MonitorPerkelasState extends State<MonitorPerkelas> {
                                                     Text(
                                                       snapshot
                                                           .data!
-                                                          .data
-                                                          .list[index]
-                                                          .kehadiran
-                                                          .hadir
+                                                          .data.list.listMonitoringPerkuliahan[
+                                                              index]
+                                                          .kehadiran.hadir
                                                           .toString(),
                                                       style: TextStyle(
                                                         color: mainBlueColor,
@@ -265,10 +281,9 @@ class _MonitorPerkelasState extends State<MonitorPerkelas> {
                                                     Text(
                                                       snapshot
                                                           .data!
-                                                          .data
-                                                          .list[index]
-                                                          .kehadiran
-                                                          .absen
+                                                          .data.list.listMonitoringPerkuliahan[
+                                                              index]
+                                                          .kehadiran.absen
                                                           .toString(),
                                                       style: TextStyle(
                                                         color: mainBlueColor,
@@ -293,10 +308,9 @@ class _MonitorPerkelasState extends State<MonitorPerkelas> {
                                                     Text(
                                                       snapshot
                                                           .data!
-                                                          .data
-                                                          .list[index]
-                                                          .kehadiran
-                                                          .izin
+                                                          .data.list.listMonitoringPerkuliahan[
+                                                              index]
+                                                          .kehadiran.izin
                                                           .toString(),
                                                       style: TextStyle(
                                                         color: mainBlueColor,
@@ -322,8 +336,11 @@ class _MonitorPerkelasState extends State<MonitorPerkelas> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceAround,
                                             children: [
-                                              if (snapshot.data!.data
-                                                      .list[index].statusSiremun
+                                              if (snapshot
+                                                      .data!
+                                                      .data.list.listMonitoringPerkuliahan[
+                                                          index]
+                                                      .statusSiremun
                                                       .toString() !=
                                                   "1")
                                                 (InkWell(
@@ -362,8 +379,7 @@ class _MonitorPerkelasState extends State<MonitorPerkelas> {
                                                                 onPressed: () {
                                                                   deleteWithBody(snapshot
                                                                       .data!
-                                                                      .data
-                                                                      .list[
+                                                                      .data.list.listMonitoringPerkuliahan[
                                                                           index]
                                                                       .idMonitoringPerkuliahan
                                                                       .toString());
@@ -403,17 +419,14 @@ class _MonitorPerkelasState extends State<MonitorPerkelas> {
                                                   _editM(
                                                       snapshot
                                                           .data!
-                                                          .data
-                                                          .list[index]
+                                                          .data.list.listMonitoringPerkuliahan[index]
                                                           .idMonitoringPerkuliahan
                                                           .toString(),
-                                                      snapshot.data!.data
-                                                          .list[index].idKelas
+                                                      snapshot.data!.data.list.listMonitoringPerkuliahan[index].idKelas
                                                           .toString(),
                                                       snapshot
                                                           .data!
-                                                          .data
-                                                          .list[index]
+                                                          .data.list.listMonitoringPerkuliahan[index]
                                                           .statusSiremun
                                                           .toString());
                                                 },
@@ -442,8 +455,7 @@ class _MonitorPerkelasState extends State<MonitorPerkelas> {
                                                 onTap: () {
                                                   _idMonitor(snapshot
                                                       .data!
-                                                      .data
-                                                      .list[index]
+                                                      .data.list.listMonitoringPerkuliahan[index]
                                                       .idMonitoringPerkuliahan
                                                       .toString());
                                                 },
@@ -477,19 +489,20 @@ class _MonitorPerkelasState extends State<MonitorPerkelas> {
                                 );
                               }),
                         ),
-                        if (snapshot.data!.data.list.length <= 16 &&
-                            snapshot.data!.data.list.length != 16)
-                          Container(
-                            margin: const EdgeInsets.all(10),
-                            child: (FloatingActionButton.extended(
-                              onPressed: () {
-                                _tambahMonitor(idMonitor);
-                              },
-                              label: const Text('Pertemuan'),
-                              icon: const Icon(Icons.add),
-                              backgroundColor: mainBlackColor,
-                            )),
-                          ),
+                        if (SpUtil.getString("status_rps") == "true")
+                          if (snapshot.data!.data.list.listMonitoringPerkuliahan.length <= 16 &&
+                              snapshot.data!.data.list.listMonitoringPerkuliahan.length != 16)
+                            Container(
+                              margin: const EdgeInsets.all(10),
+                              child: (FloatingActionButton.extended(
+                                onPressed: () {
+                                  _tambahMonitor(idMonitor);
+                                },
+                                label: const Text('Pertemuan'),
+                                icon: const Icon(Icons.add),
+                                backgroundColor: mainBlackColor,
+                              )),
+                            ),
                       ],
                     );
                   } else {
@@ -510,8 +523,11 @@ class _MonitorPerkelasState extends State<MonitorPerkelas> {
   }
 
   Future _tambahMonitor(String idMonitoringPerkuliahan) async {
+    // Navigator.pushNamed(context, 'tambahmonitor');
     SpUtil.putString("id_monitoring_perkuliahann", idMonitoringPerkuliahan);
-    Navigator.pushNamed(context, 'tambahmonitor');
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return const TambahPertemuan();
+    }));
   }
 
   Future _editM(String idMonitoringPerkuliahan, String idKelas,
@@ -519,11 +535,13 @@ class _MonitorPerkelasState extends State<MonitorPerkelas> {
     SpUtil.putString("id_monitoring_perkuliahann", idMonitoringPerkuliahan);
     SpUtil.putString("id_kelass", idKelas);
     SpUtil.putString("status_siremun", statusSiremun);
-    Navigator.pushNamed(context, 'editmonitor');
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return const EditMonitoringKuliah();
+    }));
   }
 
   Future<void> deleteWithBody(String idMonitoringPerkuliahan) async {
-    final url = 'https://ws.unja.ac.id/api/siakad/monitoring-perkuliahan';
+    final url = hapusmonitor;
 
     // Create a map representing the request body
     final requestBody = {
@@ -543,7 +561,11 @@ class _MonitorPerkelasState extends State<MonitorPerkelas> {
 
     if (response.statusCode == 200) {
       // Request was successful
-      Navigator.pushNamed(context, 'monitorperkelas');
+      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      //   return const MonitorPerkelas();
+      // }));
+      Navigator.pop(context);
+      setState(() {});
       print('DELETE request with body succeeded.');
     } else {
       // Request failed

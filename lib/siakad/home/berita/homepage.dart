@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            "Mastris ",
+                            "MASTRIS ",
                             style: TextStyle(
                                 fontSize: 28,
                                 color: Color(0xFF1E3B78),
@@ -303,20 +303,40 @@ class _HomePageState extends State<HomePage> {
                                   onTap: () {
                                     if (SpUtil.getString("usertype") ==
                                         "mahasiswa") {
-                                      Navigator.pushNamed(context, 'develop');
+                                      Navigator.pushNamed(context, 'homemhselista');
                                       setState(() {
                                         getUserId();
                                         _kirimFcm();
                                       });
                                     } else {
                                       // Navigator.pushNamed(context, 'homedosenelista');
-                                      Navigator.pushNamed(context, 'develop');
+                                      Navigator.pushNamed(context, 'homedosenelista');
                                       setState(() {
                                         _kirimFcm();
                                       });
                                     }
                                   },
                                 ),
+                                // cardApp(
+                                //   icon: 'assets/img/elistalogo.png',
+                                //   label: 'Surat',
+                                //   onTap: () {
+                                //     if (SpUtil.getString("usertype") ==
+                                //         "mahasiswa") {
+                                //       Navigator.pushNamed(context, 'homemhselista');
+                                //       setState(() {
+                                //         getUserId();
+                                //         _kirimFcm();
+                                //       });
+                                //     } else {
+                                //       // Navigator.pushNamed(context, 'homedosenelista');
+                                //       Navigator.pushNamed(context, 'homedosenelista');
+                                //       setState(() {
+                                //         _kirimFcm();
+                                //       });
+                                //     }
+                                //   },
+                                // ),
                               ],
                             ),
                           )

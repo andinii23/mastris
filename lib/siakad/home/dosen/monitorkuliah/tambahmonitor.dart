@@ -4,15 +4,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:mastrisunja/siakad/home/dosen/monitorkuliah/monitorperkelas.dart';
 import 'package:sp_util/sp_util.dart';
-
-import '../../../model/detailmonitor.dart';
+import 'package:timer_builder/timer_builder.dart';
+import '../../../model/monitorkuliahperkelasmodel.dart';
 import '../../../settings/constant.dart';
-
 
 class TambahPertemuan extends StatefulWidget {
   const TambahPertemuan({super.key});
-  
+
   @override
   State<TambahPertemuan> createState() => _TambahPertemuanState();
 }
@@ -20,18 +20,24 @@ class TambahPertemuan extends StatefulWidget {
 class _TambahPertemuanState extends State<TambahPertemuan> {
   final _formState = GlobalKey<FormState>();
 
-  Future<DetailMonitoringKuliahModel> getMonitorData() async {
+  Future<MonitorKuliahPerkelasModel> getDetailData() async {
     var header = {"Authorization": "Bearer ${SpUtil.getString("token")}"};
     var response = await http.get(
-        Uri.parse(mhsmonitor + SpUtil.getString("id_monitoring_perkuliahann")!),
+        Uri.parse(monitorperkelas + SpUtil.getString("id_kelass")!),
         headers: header);
-    var data = jsonDecode(response.body);
+    var data = jsonDecode(response.body.toString());
     if (response.statusCode == 200) {
       // print(response.body);
-      return DetailMonitoringKuliahModel.fromJson(data);
+      return MonitorKuliahPerkelasModel.fromJson(data);
     } else {
-      return DetailMonitoringKuliahModel.fromJson(data);
+      return MonitorKuliahPerkelasModel.fromJson(data);
     }
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    super.setState(fn);
+    getDetailData();
   }
 
   final selectedIndex = [];
@@ -107,161 +113,192 @@ class _TambahPertemuanState extends State<TambahPertemuan> {
             color: Colors.black,
           ),
           onTap: () {
-            Navigator.pop(context);
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) {
+              return const MonitorPerkelas();
+            }));
           },
         ),
       ),
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
-        child: FutureBuilder(
-            future: getMonitorData(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Container(
-                  padding: const EdgeInsets.all(20),
-                  child: Form(
-                      key: _formState,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 20.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Form(
+              key: _formState,
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Tanggal",
+                          style: TextStyle(
+                            color: mainBlackColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _tanggalController,
+                          validator: (value) {
+                            if (value == '') {
+                              return "tanggal harus diisi!!";
+                            }
+                            return null;
+                          },
+                          onTap: () async {
+                            DateTime? pickeddate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2101));
+
+                            if (pickeddate != null) {
+                              setState(() {
+                                _tanggalController.text =
+                                    DateFormat('yyyy-MM-dd').format(pickeddate);
+                              });
+                            }
+                          },
+                          decoration: const InputDecoration(
+                              hintText: "Tanggal",
+                              border: OutlineInputBorder(),
+                              suffixIcon: IconButton(
+                                  onPressed: null,
+                                  icon: Icon(Icons.calendar_month))),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Jam Perkuliahan",
+                          style: TextStyle(
+                            color: mainBlackColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Tanggal",
-                                  style: TextStyle(
-                                    color: mainBlackColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
+                            SizedBox(
+                              width: 150,
+                              child: TextFormField(
+                                controller: _mulaiController,
+                                validator: (value) {
+                                  if (value == '') {
+                                    return "jam mulai harus diisi!!";
+                                  }
+                                  return null;
+                                },
+                                onTap: () async {
+                                  await showTimePickerDialog(context,
+                                      controller: _mulaiController);
+                                },
+                                decoration: const InputDecoration(
+                                  hintText: "Mulai",
+                                  border: OutlineInputBorder(),
                                 ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                TextFormField(
-                                  controller: _tanggalController,
-                                  validator: (value) {
-                                    if (value == '') {
-                                      return "tanggal harus diisi!!";
-                                    }
-                                    return null;
-                                  },
-                                  onTap: () async {
-                                    DateTime? pickeddate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(2000),
-                                        lastDate: DateTime(2101));
-
-                                    if (pickeddate != null) {
-                                      setState(() {
-                                        _tanggalController.text =
-                                            DateFormat('yyyy-MM-dd')
-                                                .format(pickeddate);
-                                      });
-                                    }
-                                  },
-                                  decoration: const InputDecoration(
-                                      hintText: "Tanggal",
-                                      border: OutlineInputBorder(),
-                                      suffixIcon: IconButton(
-                                          onPressed: null,
-                                          icon: Icon(Icons.calendar_month))),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Jam Perkuliahan",
-                                  style: TextStyle(
-                                    color: mainBlackColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(
-                                      width: 150,
-                                      child: TextFormField(
-                                        controller: _mulaiController,
-                                        validator: (value) {
-                                          if (value == '') {
-                                            return "jam mulai harus diisi!!";
-                                          }
-                                          return null;
-                                        },
-                                        onTap: () async {
-                                          await showTimePickerDialog(context,
-                                              controller: _mulaiController);
-                                        },
-                                        decoration: const InputDecoration(
-                                          hintText: "Mulai",
-                                          border: OutlineInputBorder(),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                    SizedBox(
-                                      width: 150,
-                                      child: TextFormField(
-                                        controller: _selesaiController,
-                                        validator: (value) {
-                                          if (value == '') {
-                                            return "jam selesai harus diisi!!";
-                                          }
-                                          return null;
-                                        },
-                                        onTap: () async {
-                                          await showTimePickerDialog(context,
-                                              controller: _selesaiController);
-                                        },
-                                        decoration: const InputDecoration(
-                                          hintText: "Selesai",
-                                          border: OutlineInputBorder(),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-
-                            // Text(
-                            //   idDosen,
-                            //   style: TextStyle(color: mainBlackColor),
-                            // ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              "Pilih Dosen Hadir",
-                              style: TextStyle(
-                                color: mainBlackColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
                               ),
                             ),
-                            ListView.builder(
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            SizedBox(
+                              width: 150,
+                              child: TextFormField(
+                                controller: _selesaiController,
+                                validator: (value) {
+                                  if (value == '') {
+                                    return "jam selesai harus diisi!!";
+                                  }
+                                  return null;
+                                },
+                                onTap: () async {
+                                  await showTimePickerDialog(context,
+                                      controller: _selesaiController);
+                                },
+                                decoration: const InputDecoration(
+                                  hintText: "Selesai",
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Materi",
+                          style: TextStyle(
+                            color: mainBlackColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          controller: _materiController,
+                          validator: (value) {
+                            if (value == '') {
+                              return "materi harus diisi!!";
+                            }
+                            return null;
+                          },
+                          decoration: const InputDecoration(
+                            hintText: "Materi",
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Text(
+                      "Pilih Dosen Hadir",
+                      style: TextStyle(
+                        color: mainBlackColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                    TimerBuilder.periodic(const Duration(seconds: 10),
+                        builder: (context) {
+                      return FutureBuilder(
+                        future: getDetailData(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return ListView.builder(
                                 physics: const ScrollPhysics(),
                                 scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
@@ -273,7 +310,7 @@ class _TambahPertemuanState extends State<TambahPertemuan> {
 
                                   return CheckboxListTile(
                                     title: Text(
-                                        "${idDosen.namaDosen.toString()} ${idDosen.gelarBelakang.toString()}"),
+                                        "${idDosen.namaPegawai.toString()} ${idDosen.gelarBelakang.toString()}"),
                                     value:
                                         selectedIndex.contains(idDosen.idDosen),
                                     onChanged: (val) {
@@ -283,136 +320,132 @@ class _TambahPertemuanState extends State<TambahPertemuan> {
                                       });
                                     },
                                   );
-                                }),
-
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Materi",
-                                  style: TextStyle(
-                                    color: mainBlackColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                TextFormField(
-                                  controller: _materiController,
-                                  validator: (value) {
-                                    if (value == '') {
-                                      return "materi harus diisi!!";
-                                    }
-                                    return null;
-                                  },
-                                  decoration: const InputDecoration(
-                                    hintText: "Materi",
-                                    border: OutlineInputBorder(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-
-                            Text(
-                              "Daftar Mahasiswa",
-                              style: TextStyle(
-                                color: mainBlackColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                            ),
-                            CheckboxListTile(
-                              title: const Text("Select All"),
-                              value: selectAllMahasiswa,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectAllMahasiswa = value!;
-                                  if (selectAllMahasiswa) {
-                                    selectedIndex2.clear();
-                                    // Tambahkan semua ID mahasiswa ke dalam selectedIndex2
-                                    final mhsList =
-                                        snapshot.data!.data.list.mahasiswa;
-                                    for (var i = 0; i < mhsList.length; i++) {
-                                      selectedIndex2.add(mhsList[i].idMhsPt);
-                                    }
-                                  } else {
-                                    selectedIndex2.clear();
-                                  }
-                                  print(selectedIndex2);
                                 });
-                              },
-                            ),
-                            ListView.builder(
-                                physics: const ScrollPhysics(),
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                itemCount:
-                                    snapshot.data!.data.list.mahasiswa.length,
-                                itemBuilder: (context, mhs) {
-                                  final idMhs =
-                                      snapshot.data!.data.list.mahasiswa[mhs];
-
-                                  return Column(
-                                    children: [
-                                      CheckboxListTile(
-                                          title: Text(snapshot.data!.data.list
-                                              .mahasiswa[mhs].namaMahasiswa
-                                              .toString()),
-                                          value: selectAllMahasiswa
-                                              ? selectAllMahasiswa
-                                              : selectedIndex2
-                                                  .contains(idMhs.idMhsPt),
-                                          onChanged: (valmhs) {
-                                            setState(() {
-                                              selectIndexWithID2(idMhs.idMhsPt);
-                                              print(selectedIndex2);
-                                            });
-                                          }),
-                                    ],
-                                  );
-                                }),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (_formState.currentState!.validate()) {
-                                    postData();
-                                  } else {
-                                    print("validasi gagal");
-                                  }
+                          } else {
+                            //      return const Center(
+                            //   child: CircularProgressIndicator(),
+                            // );
+                            return const Text("");
+                          }
+                        },
+                      );
+                    }),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "Daftar Mahasiswa",
+                      style: TextStyle(
+                        color: mainBlackColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                    TimerBuilder.periodic(const Duration(seconds: 10),
+                        builder: (context) {
+                      return FutureBuilder(
+                          future: getDetailData(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return CheckboxListTile(
+                                title: const Text("Select All"),
+                                value: selectAllMahasiswa,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectAllMahasiswa = value!;
+                                    if (selectAllMahasiswa) {
+                                      selectedIndex2.clear();
+                                      // Tambahkan semua ID mahasiswa ke dalam selectedIndex2
+                                      final mhsList =
+                                          snapshot.data!.data.list.mahasiswa;
+                                      for (var i = 0; i < mhsList.length; i++) {
+                                        selectedIndex2.add(mhsList[i].idMhsPt);
+                                      }
+                                    } else {
+                                      selectedIndex2.clear();
+                                    }
+                                    print(selectedIndex2);
+                                  });
                                 },
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all(mainBlueColor),
-                                ),
-                                child: const Text(
-                                  "Tambah",
-                                  style: TextStyle(fontSize: 18),
-                                ),
-                              ),
-                            )
-                          ],
+                              );
+                            } else {
+                              //         return const Center(
+                              //   child: CircularProgressIndicator(),
+                              // );
+                              return const Text("");
+                            }
+                          });
+                    }),
+                    TimerBuilder.periodic(const Duration(seconds: 10),
+                        builder: (context) {
+                      return FutureBuilder(
+                          future: getDetailData(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return ListView.builder(
+                                  physics: const ScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemCount:
+                                      snapshot.data!.data.list.mahasiswa.length,
+                                  itemBuilder: (context, mhs) {
+                                    final idMhs =
+                                        snapshot.data!.data.list.mahasiswa[mhs];
+
+                                    return Column(
+                                      children: [
+                                        CheckboxListTile(
+                                            title: Text(snapshot.data!.data.list.mahasiswa[mhs].namaMahasiswa
+                                                .toString()),
+                                            value: selectAllMahasiswa
+                                                ? selectAllMahasiswa
+                                                : selectedIndex2
+                                                    .contains(idMhs.idMhsPt),
+                                            onChanged: (valmhs) {
+                                              setState(() {
+                                                selectIndexWithID2(
+                                                    idMhs.idMhsPt);
+                                                print(selectedIndex2);
+                                              });
+                                            }),
+                                      ],
+                                    );
+                                  });
+                            } else {
+                              //         return const Center(
+                              //   child: CircularProgressIndicator(),
+                              // );
+                              return const Text("");
+                            }
+                          });
+                    }),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (_formState.currentState!.validate()) {
+                            postData();
+                          } else {
+                            print("validasi gagal");
+                          }
+                        },
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(mainBlueColor),
                         ),
-                      )),
-                );
-              } else {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            }),
+                        child: const Text(
+                          "Tambah",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              )),
+        ),
       ),
     );
   }
@@ -440,7 +473,9 @@ class _TambahPertemuanState extends State<TambahPertemuan> {
     if (response.statusCode == 200) {
       // Data berhasil terkirim
       // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, 'monitorperkelas');
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return const MonitorPerkelas();
+      }));
       print('Data berhasil terkirim');
       print(response.body);
     } else {
